@@ -1,0 +1,5 @@
+package com.example.randomuser_test_task.feature.generateuser
+
+import com.example.randomuser_test_task.domain.generateuser.GenerateUserInteractor
+
+class GenerateUserViewModel
