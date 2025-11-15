@@ -1,22 +1,23 @@
 package com.example.randomuser_test_task.feature.generateuser
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
+import androidx.compose.material3.BottomAppBarDefaults.containerColor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.randomuser_test_task.domain.model.Gender
-import com.example.randomuser_test_task.domain.model.Nationality
 import com.example.randomuser_test_task.feature.generateuser.view.GenderSelection
 import com.example.randomuser_test_task.feature.generateuser.view.NationalitySelection
+import com.example.randomuser_test_task.uikit.BlueDark
+import com.example.randomuser_test_task.uikit.BlueLight
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,28 +42,41 @@ fun GenerateUserScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = BlueDark
                         )
                     }
                 }
             )
         },
         bottomBar = {
-            BottomAppBar {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
                 Button(
                     onClick = {
                         viewModel.onEvent(GenerateUserEvent.OnGenerateButtonClicked)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    enabled = state.selectedNationalities.isNotEmpty() && !state.isLoading
+                        .height(56.dp)
+                        .padding(horizontal = 16.dp),
+                    enabled = state.selectedNationalities.isNotEmpty() && !state.isLoading,
+                            colors = ButtonDefaults.buttonColors(
+                            containerColor = if (state.selectedNationalities.isNotEmpty() && !state.isLoading) {
+                                BlueDark
+                            } else {
+                                BlueLight
+                            },
+                )
                 ) {
                     if (state.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = Color.White
                         )
                     } else {
                         Text("Generate")
@@ -80,8 +94,10 @@ fun GenerateUserScreen(
         ) {
             Text(
                 text = "Select Gender",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleMedium,
+                color = BlueDark,
                 modifier = Modifier.padding(bottom = 8.dp)
+
             )
             GenderSelection(
                 selectedGender = state.selectedGender,
@@ -92,7 +108,8 @@ fun GenerateUserScreen(
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Select Nationality",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleMedium,
+                color = BlueDark,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             NationalitySelection(
@@ -107,7 +124,9 @@ fun GenerateUserScreen(
         LaunchedEffect(key1 = true) {
             viewModel.sideEffect.collectLatest { sideEffect ->
                 when (sideEffect) {
-                    GenerateUserSideEffect.NavigateToUserList -> onNavigateToUserList()
+                    GenerateUserSideEffect.NavigateToUserList -> {
+                        onNavigateToUserList()
+                    }
                     is GenerateUserSideEffect.ShowError -> {
                     }
                 }

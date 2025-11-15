@@ -2,6 +2,9 @@ package com.example.randomuser_test_task.feature.userslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.example.randomuser_test_task.domain.userslist.UsersListInteractor
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +16,16 @@ import kotlinx.coroutines.launch
 class UsersListViewModel(
     private val interactor: UsersListInteractor
 ) : ViewModel() {
+
+    val usersPagingFlow = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false,
+            initialLoadSize = 20
+        )
+    ) {
+        interactor.getUsersPagingSource()
+    }.flow.cachedIn(viewModelScope)
 
     private val _state = MutableStateFlow(UsersListState())
     val state = _state.asStateFlow()

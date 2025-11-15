@@ -16,20 +16,11 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsers(users: List<UserEntity>)
 
-    @Query("SELECT * FROM users ORDER BY createdAt DESC")
-    fun getUsersPagingSource(): PagingSource<Int, UserEntity>
-
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserById(id: String): UserEntity?
 
     @Query("SELECT COUNT(*) FROM users")
     suspend fun getUsersCount(): Int
-
-    @Query("SELECT * FROM users ORDER BY createdAt DESC LIMIT 1")
-    suspend fun getLastUser(): UserEntity?
-
-    @Query("DELETE FROM users WHERE id = :id")
-    suspend fun deleteUser(id: String)
 
     @Query("DELETE FROM users")
     suspend fun clearAll()

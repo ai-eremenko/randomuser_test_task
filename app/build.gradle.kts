@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bankcard"
+    namespace = "com.example.randomuser_test_task"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.bankcard"
+        applicationId = "com.example.randomuser_test_task"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -86,4 +86,8 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.fragment.ktx)
     implementation(libs.coil.compose)
+
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:3.3.0-alpha02")
+
 }

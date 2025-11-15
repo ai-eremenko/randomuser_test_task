@@ -26,7 +26,12 @@ class GenerateUserViewModel(
     fun onEvent(event: GenerateUserEvent) {
         when (event) {
             is GenerateUserEvent.OnGenderSelected -> {
-                _state.update { it.copy(selectedGender = event.gender) }
+                val newGender = if (_state.value.selectedGender == event.gender) {
+                    null
+                } else {
+                    event.gender
+                }
+                _state.update { it.copy(selectedGender = newGender) }
             }
             is GenerateUserEvent.OnNationalitySelected -> {
                 val currentNationalities = _state.value.selectedNationalities.toMutableSet()
