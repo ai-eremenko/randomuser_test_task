@@ -15,7 +15,7 @@ import com.example.randomuser_test_task.domain.model.Nationality
 @Composable
 fun NationalitySelection(
     selectedNationalities: Set<Nationality>,
-    onNationalitiesChanged: (Set<Nationality>) -> Unit
+    onNationalitiesChanged: (Nationality) -> Unit
 ) {
     Column {
         Nationality.entries.forEach { nationality ->
@@ -34,7 +34,7 @@ fun NationalitySelection(
                         } else {
                             newSelection.remove(nationality)
                         }
-                        onNationalitiesChanged(newSelection)
+                        onNationalitiesChanged(nationality)
                     }
                 )
                 Text(

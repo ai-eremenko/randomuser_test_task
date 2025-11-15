@@ -33,4 +33,7 @@ interface UserDao {
 
     @Query("DELETE FROM users")
     suspend fun clearAll()
+
+    @Query("SELECT * FROM users ORDER BY createdAt DESC LIMIT :limit OFFSET :offset")
+    suspend fun getUsersPaginated(limit: Int, offset: Int): List<UserEntity>
 }

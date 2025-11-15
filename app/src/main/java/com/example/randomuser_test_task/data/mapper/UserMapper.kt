@@ -153,4 +153,8 @@ object UserMapper {
             "$city, $state, $country"
         }
     }
+
+    fun toUser(entity: UserEntity): User {
+        return entity.toUser()
+    }
 }
