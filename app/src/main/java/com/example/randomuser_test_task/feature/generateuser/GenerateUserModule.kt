@@ -5,5 +5,5 @@ import org.koin.dsl.module
 
 
 val generateUserModule = module {
-
+    viewModel { GenerateUserViewModel(get()) }
 }

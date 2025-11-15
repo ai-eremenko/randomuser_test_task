@@ -27,16 +27,41 @@ class UserDetailViewModel(
 
     fun onEvent(event: UserDetailEvent) {
         when (event) {
-            UserDetailEvent.LoadUser -> loadUser()
-            UserDetailEvent.ErrorShown -> {
-                _state.update { it.copy(error = null) }
-            }
+            UserDetailEvent.OnLoadUser -> loadUser()
         }
+    }
+
+    fun onBackClick() {
+        viewModelScope.launch {
+            _sideEffect.emit(UserDetailSideEffect.NavigateBack)
+        }
+    }
+
+    fun makePhoneCall(phoneNumber: String) {
+        viewModelScope.launch {
+            _sideEffect.emit(UserDetailSideEffect.MakePhoneCall(phoneNumber))
+        }
+    }
+
+    fun sendEmail(email: String) {
+        viewModelScope.launch {
+            _sideEffect.emit(UserDetailSideEffect.SendEmail(email))
+        }
+    }
+
+    fun openLocation(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            _sideEffect.emit(UserDetailSideEffect.OpenLocation(latitude, longitude))
+        }
+    }
+
+    fun onTabSelected(tabIndex: Int) {
+        _state.update { it.copy(selectedTabIndex = tabIndex) }
     }
 
     private fun loadUser() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(isLoading = true) }
 
             try {
                 val user = interactor.getUserById(userId)
@@ -49,10 +74,10 @@ class UserDetailViewModel(
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        error = e.message ?: "Failed to load user details"
+                        isLoading = false
                     )
                 }
+                _sideEffect.emit(UserDetailSideEffect.ShowError(e.message ?: "Failed to load user details"))
             }
         }
     }

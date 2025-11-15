@@ -19,6 +19,8 @@ data class UserEntity(
     val pictureThumbnail: String,
     val nationality: String,
     val location: String,
+    val latitude: Double,
+    val longitude: Double,
     val street: String,
     val city: String,
     val state: String,

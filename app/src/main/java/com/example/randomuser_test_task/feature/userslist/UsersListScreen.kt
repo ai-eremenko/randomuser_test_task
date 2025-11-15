@@ -27,18 +27,6 @@ fun UsersListScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.sideEffect.collectLatest { sideEffect ->
-            when (sideEffect) {
-                is UsersListSideEffect.NavigateToUserDetail ->
-                    onNavigateToUserDetail(sideEffect.user)
-                is UsersListSideEffect.ShowError -> {
-                    // Показать Snackbar
-                }
-            }
-        }
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -67,12 +55,22 @@ fun UsersListScreen(
             }
             else -> {
                 UsersListContent(
-                    users = state.users,
+                    users = state.listUsers,
                     onUserClick = { user ->
-                        viewModel.onEvent(UsersListEvent.UserClicked(user))
+                        viewModel.onEvent(UsersListEvent.onUserClicked(user))
                     },
                     modifier = Modifier.padding(paddingValues)
                 )
+            }
+        }
+        LaunchedEffect(key1 = true) {
+            viewModel.sideEffect.collectLatest { sideEffect ->
+                when (sideEffect) {
+                    is UsersListSideEffect.NavigateToUserDetail ->
+                        onNavigateToUserDetail(sideEffect.user)
+                    is UsersListSideEffect.ShowError -> {
+                    }
+                }
             }
         }
     }

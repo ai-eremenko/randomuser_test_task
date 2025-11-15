@@ -7,7 +7,7 @@ data class LocationResponse(
     @SerializedName("city") val city: String,
     @SerializedName("state") val state: String,
     @SerializedName("country") val country: String,
-    @SerializedName("postcode") val postcode: Any, // Может быть String или Int
+    @SerializedName("postcode") val postcode: Any,
     @SerializedName("coordinates") val coordinates: CoordinatesResponse,
     @SerializedName("timezone") val timezone: TimezoneResponse
 )

@@ -26,22 +26,17 @@ class UsersListViewModel(
 
     fun onEvent(event: UsersListEvent) {
         when (event) {
-            UsersListEvent.LoadUsers -> loadUsers()
-            is UsersListEvent.UserClicked -> {
+            is UsersListEvent.onUserClicked -> {
                 viewModelScope.launch {
                     _sideEffect.emit(UsersListSideEffect.NavigateToUserDetail(event.user))
                 }
             }
-            UsersListEvent.ErrorShown -> {
-                _state.update { it.copy(error = null) }
-            }
-            UsersListEvent.Refresh -> refreshUsers()
         }
     }
 
     private fun loadUsers() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(isLoading = true) }
 
             try {
                 val usersCount = interactor.getUsersCount()
@@ -56,15 +51,11 @@ class UsersListViewModel(
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        error = e.message ?: "Failed to load users"
+                        isLoading = false
                     )
                 }
+                _sideEffect.emit(UsersListSideEffect.ShowError(e.message ?: "Failed to load users"))
             }
         }
-    }
-
-    private fun refreshUsers() {
-        loadUsers()
     }
 }
