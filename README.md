@@ -13,6 +13,7 @@
 - **Архитектура**: MVI + Clean Architecture
 - **UI**: Jetpack Compose
 - **DI**: Koin
+- **Локальная база данных**: Room
 - **Сеть**: Retrofit 2 + OkHttp3
 - **Изображения**: Coil
 - **Навигация**: Navigation Component с безопасной передачей аргументов
