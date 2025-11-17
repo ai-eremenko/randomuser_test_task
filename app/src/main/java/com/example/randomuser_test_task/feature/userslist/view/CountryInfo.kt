@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CountryInfo(
+    modifier: Modifier = Modifier,
     countryCode: String,
-    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
@@ -48,7 +48,7 @@ fun CountryInfo(
         }
     }
 
-fun getFlagEmoji(countryCode: String): String {
+private fun getFlagEmoji(countryCode: String): String {
     if (countryCode.length != 2) return ""
     val firstChar = 0x1F1E6 + (countryCode[0].uppercaseChar() - 'A')
     val secondChar = 0x1F1E6 + (countryCode[1].uppercaseChar() - 'A')

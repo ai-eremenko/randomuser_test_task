@@ -3,32 +3,31 @@ package com.example.randomuser_test_task.feature.userdetail.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.User
-import com.example.randomuser_test_task.feature.userdetail.ClickableInfoRow
-import com.example.randomuser_test_task.feature.userdetail.UserDetailSideEffect
-import com.example.randomuser_test_task.feature.userdetail.view.InfoRow
+import com.example.randomuser_test_task.domain.User
+import com.example.randomuser_test_task.R
+import com.example.randomuser_test_task.feature.userdetail.UserDetailEvent
 
 @Composable
 fun LocationTab(
     user: User,
-    openLocation: (Double, Double) -> Unit
+    onEvent: (UserDetailEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        InfoRow("Street:", user.street)
-        InfoRow("City:", user.city)
-        InfoRow("State:", user.state)
-        InfoRow("Country:", user.country)
-
+        InfoRow(stringResource(id = R.string.street_label), user.street)
+        InfoRow(stringResource(id = R.string.city_label), user.city)
+        InfoRow(stringResource(id = R.string.state_label), user.state)
+        InfoRow(stringResource(id = R.string.country_label), user.country)
+        InfoRow(stringResource(id = R.string.location_label), user.location)
         ClickableInfoRow(
-            label = "Coordinates:",
+            label = stringResource(id = R.string.coordinates_label),
             value = "${user.latitude}, ${user.longitude}",
-            onClick = { openLocation(user.latitude, user.longitude) }
+            onClick = { onEvent(UserDetailEvent.OnLocationClicked) }
         )
-        InfoRow("Location:", user.location)
     }
 }

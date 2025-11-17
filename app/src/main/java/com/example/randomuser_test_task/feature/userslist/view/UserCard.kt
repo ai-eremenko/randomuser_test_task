@@ -5,24 +5,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.material3.BottomAppBarDefaults.containerColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.User
+import com.example.randomuser_test_task.domain.User
+import com.example.randomuser_test_task.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserCard(
+    modifier: Modifier = Modifier,
     user: User,
-    onUserClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
 ) {
     Card(
-        onClick = onUserClick,
+        onClick = onClick,
         modifier = modifier.fillMaxWidth()
             .shadow(
                 elevation = 8.dp,
@@ -50,12 +51,12 @@ fun UserCard(
                 modifier = Modifier.weight(1f)
             )
             IconButton(
-                onClick = onUserClick,
+                onClick = onClick,
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "User details"
+                    contentDescription = stringResource(id = R.string.user_details)
                 )
             }
         }

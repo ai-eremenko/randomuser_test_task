@@ -1,4 +1,4 @@
-package com.example.randomuser_test_task.domain.model
+package com.example.randomuser_test_task.domain
 
 data class UserFilter(
     val gender: Gender? = null,
@@ -41,11 +41,4 @@ enum class Nationality(
     RS("RS", "Serbian"),
     UA("UA", "Ukrainian");
 
-    companion object {
-        fun fromCode(code: String): Nationality? {
-            return entries.find { it.code == code }
-        }
-
-        fun getAll(): List<Nationality> = entries.toList()
-    }
 }

@@ -5,8 +5,8 @@ import com.example.randomuser_test_task.data.dto.UserDto
 import com.example.randomuser_test_task.data.dto.responses.LocationResponse
 import com.example.randomuser_test_task.data.dto.responses.PictureResponse
 import com.example.randomuser_test_task.data.dto.responses.UserResponse
-import com.example.randomuser_test_task.domain.model.Picture
-import com.example.randomuser_test_task.domain.model.User
+import com.example.randomuser_test_task.domain.Picture
+import com.example.randomuser_test_task.domain.User
 
 object UserMapper {
 

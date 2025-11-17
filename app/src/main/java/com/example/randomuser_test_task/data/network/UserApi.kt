@@ -12,7 +12,5 @@ interface UserApi {
         @Query("gender") gender: String? = null,
         @Query("nat") nationality: String? = null,
         @Query("inc") includeFields: String? = null,
-        @Query("seed") seed: String? = null,
-        @Query("page") page: Int? = null
     ): ApiResponse
 }

@@ -4,15 +4,12 @@ import android.app.Application
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.randomuser_test_task.data.db.AppDatabase
-import com.example.randomuser_test_task.data.generateuser.GenerateUserRepositoryImpl
 import com.example.randomuser_test_task.data.mapper.UserMapper
 import com.example.randomuser_test_task.data.network.UserApi
-import com.example.randomuser_test_task.data.userdetail.UserDetailsRepositoryImpl
-import com.example.randomuser_test_task.data.userslist.UsersListRepositoryImpl
-import com.example.randomuser_test_task.domain.generateuser.GenerateUserRepository
-import com.example.randomuser_test_task.domain.userdetail.UserDetailsRepository
-import com.example.randomuser_test_task.domain.userslist.UsersListRepository
+import com.example.randomuser_test_task.data.repository.UsersRepository
+import com.example.randomuser_test_task.data.repository.UsersRepositoryImpl
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -38,16 +35,15 @@ val dataModule = module {
     single {
         get<AppDatabase>().userDao()
     }
-    single<GenerateUserRepository> {
-        GenerateUserRepositoryImpl(get(), get(), get())
+    factory<UsersRepository> {
+        UsersRepositoryImpl(
+            userApi = get(),
+            userDao = get(),
+            mapper = get(),
+            dispatcher = Dispatchers.IO
+        )
     }
-    single<UserDetailsRepository> {
-        UserDetailsRepositoryImpl(get(), get())
-    }
-    single<UsersListRepository> {
-        UsersListRepositoryImpl(get(), get())
-    }
-    single { UserMapper }
+    factory { UserMapper }
 }
 
 private fun provideOkHttpClient(application: Application): OkHttpClient {

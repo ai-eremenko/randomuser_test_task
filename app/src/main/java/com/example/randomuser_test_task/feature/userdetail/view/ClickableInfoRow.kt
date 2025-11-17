@@ -1,7 +1,8 @@
-package com.example.randomuser_test_task.feature.userdetail
+package com.example.randomuser_test_task.feature.userdetail.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,10 @@ fun ClickableInfoRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        onClick = onClick
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.LightGray
+        )
     ) {
         Row(
             modifier = Modifier
@@ -30,12 +34,12 @@ fun ClickableInfoRow(
                 text = label,
                 modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
-                color = Color.Gray
+                color = Color.Black
             )
             Text(
                 text = value,
                 modifier = Modifier.weight(1f),
-                color = Color.Blue
+                color = Color.Black
             )
         }
     }

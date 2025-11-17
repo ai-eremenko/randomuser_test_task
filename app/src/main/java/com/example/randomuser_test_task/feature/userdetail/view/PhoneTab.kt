@@ -3,16 +3,16 @@ package com.example.randomuser_test_task.feature.userdetail.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.User
-import com.example.randomuser_test_task.feature.userdetail.ClickableInfoRow
-import com.example.randomuser_test_task.feature.userdetail.UserDetailSideEffect
-import com.example.randomuser_test_task.feature.userdetail.view.InfoRow
+import com.example.randomuser_test_task.domain.User
+import com.example.randomuser_test_task.R
+import com.example.randomuser_test_task.feature.userdetail.UserDetailEvent
 
 @Composable
 fun PhoneTab(
     user: User,
-    makePhoneCall: (String) -> Unit
+    onEvent: (UserDetailEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -20,14 +20,9 @@ fun PhoneTab(
             .padding(16.dp)
     ) {
         ClickableInfoRow(
-            label = "Phone:",
+            label = stringResource(id = R.string.phone_label),
             value = user.phone,
-            onClick = { makePhoneCall(user.phone) }
-        )
-        ClickableInfoRow(
-            label = "Cell:",
-            value = user.cell,
-            onClick = { makePhoneCall(user.cell) }
+            onClick = { onEvent(UserDetailEvent.OnPhoneClicked) }
         )
     }
 }

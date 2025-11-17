@@ -1,129 +1,84 @@
 package com.example.randomuser_test_task.feature.userdetail
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import android.app.Activity
+import android.widget.Toast
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.randomuser_test_task.feature.userdetail.view.UserHeaderSection
-import com.example.randomuser_test_task.feature.userdetail.view.UserTabsSection
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+import androidx.core.net.toUri
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailScreen(
     userId: String,
-    onNavigateBack: () -> Unit,
-    viewModel: UserDetailViewModel = koinViewModel()
+    navController: NavController,
+    viewModel: UserDetailViewModel = koinViewModel(
+        parameters = { parametersOf(userId)}
+    )
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("User Details") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        viewModel.onBackClick()
-                    }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            state.user != null -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    UserHeaderSection(user = state.user!!)
-                    UserTabsSection(
-                        user = state.user!!,
-                        selectedTabIndex = state.selectedTabIndex,
-                        onTabSelected = { tabIndex ->
-                            viewModel.onTabSelected(tabIndex)
-                        },
-                        makePhoneCall = { phoneNumber ->
-                            viewModel.makePhoneCall(phoneNumber)
-                        },
-                        sendEmail = { email ->
-                            viewModel.sendEmail(email)
-                        },
-                        openLocation = { lat, lng ->
-                            viewModel.openLocation(lat, lng)
-                        }
-                    )
-                }
-            }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("User not found")
-                }
-            }
-        }
-    }
-
+    val activity = LocalContext.current as Activity
+    UserDetailScreenView(state = state, onEvent = viewModel::onEvent)
     LaunchedEffect(key1 = true) {
         viewModel.sideEffect.collectLatest { effect ->
-            when (effect) {
-                UserDetailSideEffect.NavigateBack -> onNavigateBack()
-                is UserDetailSideEffect.ShowError -> {
-                    android.widget.Toast.makeText(
-                        context,
-                        effect.message,
-                        android.widget.Toast.LENGTH_LONG
-                    ).show()
-                }
+            handleSideEffect(
+                sideEffect = effect, activity = activity, navController = navController
+            )
+        }
+    }
+}
 
-                is UserDetailSideEffect.MakePhoneCall -> {
-                    val intent = android.content.Intent(
-                        android.content.Intent.ACTION_DIAL,
-                        android.net.Uri.parse("tel:${effect.phoneNumber}")
-                    )
-                    context.startActivity(intent)
-                }
-
-                is UserDetailSideEffect.SendEmail -> {
-                    val intent = android.content.Intent(
-                        android.content.Intent.ACTION_SENDTO,
-                        android.net.Uri.parse("mailto:${effect.email}")
-                    )
-                    context.startActivity(intent)
-                }
-
-                is UserDetailSideEffect.OpenLocation -> {
-                    val uri =
-                        "geo:${effect.latitude},${effect.longitude}?q=${effect.latitude},${effect.longitude}"
-                    val intent = android.content.Intent(
-                        android.content.Intent.ACTION_VIEW,
-                        android.net.Uri.parse(uri)
-                    )
-                    context.startActivity(intent)
-                }
+private fun handleSideEffect(
+    activity: Activity,
+    sideEffect: UserDetailSideEffect,
+    navController: NavController
+) {
+    when (sideEffect) {
+        UserDetailSideEffect.Finish -> navController.popBackStack()
+        is UserDetailSideEffect.MakePhoneCall -> {
+            try {
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_DIAL,
+                    "tel:${sideEffect.phoneNumber}".toUri()
+                )
+                activity.startActivity(intent)
+            } catch (e: Exception) {
+                Toast
+                    .makeText(activity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        is UserDetailSideEffect.SendEmail -> {
+            try {
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_SENDTO,
+                    "mailto:${sideEffect.email}".toUri()
+                )
+                activity.startActivity(intent)
+            } catch (e: Exception) {
+                Toast
+                    .makeText(activity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        is UserDetailSideEffect.OpenLocation -> {
+            try {
+                val uri =
+                    "geo:${sideEffect.latitude},${sideEffect.longitude}?q=${sideEffect.latitude},${sideEffect.longitude}"
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_VIEW,
+                    uri.toUri()
+                )
+                activity.startActivity(intent)
+            } catch (e: Exception) {
+                Toast
+                    .makeText(activity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

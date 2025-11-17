@@ -3,16 +3,16 @@ package com.example.randomuser_test_task.feature.userdetail.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.User
-import com.example.randomuser_test_task.feature.userdetail.ClickableInfoRow
-import com.example.randomuser_test_task.feature.userdetail.UserDetailSideEffect
-import com.example.randomuser_test_task.feature.userdetail.view.InfoRow
+import com.example.randomuser_test_task.domain.User
+import com.example.randomuser_test_task.R
+import com.example.randomuser_test_task.feature.userdetail.UserDetailEvent
 
 @Composable
 fun EmailTab(
     user: User,
-    sendEmail: (String) -> Unit
+    onEvent: (UserDetailEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -20,10 +20,9 @@ fun EmailTab(
             .padding(16.dp)
     ) {
         ClickableInfoRow(
-            label = "Email:",
+            label = stringResource(id = R.string.email_label),
             value = user.email,
-            onClick = { sendEmail(user.email) }
+            onClick = { onEvent(UserDetailEvent.OnEmailClicked) }
         )
-        InfoRow("Username:", user.username)
     }
 }

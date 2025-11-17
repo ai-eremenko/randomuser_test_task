@@ -1,4 +1,4 @@
-package com.example.randomuser_test_task.domain.model
+package com.example.randomuser_test_task.domain
 
 data class User(
     val id: String,

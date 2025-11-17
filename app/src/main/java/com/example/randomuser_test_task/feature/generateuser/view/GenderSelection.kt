@@ -14,10 +14,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,16 +24,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.Gender
+import com.example.randomuser_test_task.R
+import com.example.randomuser_test_task.domain.Gender
+import com.example.randomuser_test_task.feature.generateuser.GenerateUserEvent
 
 @Composable
 fun GenderSelection(
     selectedGender: Gender?,
-    onGenderSelected: (Gender?) -> Unit
+    availableGenders: List<Gender>,
+    onEvent: (GenerateUserEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
@@ -55,17 +55,17 @@ fun GenderSelection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = selectedGender?.displayName ?: "Select Gender",
+                    text = selectedGender?.displayName ?: stringResource
+                        (id = R.string.select_gender),
                     color = if (selectedGender == null) Color.Gray else Color.Black
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown",
+                    contentDescription = stringResource(id = R.string.dropdown),
                     tint = Color.Black
                 )
             }
         }
-        
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -78,18 +78,18 @@ fun GenderSelection(
                 )
         ) {
             DropdownMenuItem(
-                text = { Text("None") },
+                text = { Text(stringResource(id = R.string.none)) },
                 onClick = {
-                    onGenderSelected(null)
+                    onEvent(GenerateUserEvent.OnGenderSelected(null))
                     expanded = false
                 }
             )
             Divider()
-            Gender.entries.forEach { gender ->
+            availableGenders.forEach { gender ->
                 DropdownMenuItem(
                     text = { Text(gender.displayName) },
                     onClick = {
-                        onGenderSelected(gender)
+                        onEvent(GenerateUserEvent.OnGenderSelected(gender))
                         expanded = false
                     }
                 )

@@ -6,17 +6,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.randomuser_test_task.R
 
 @Composable
 fun UserAvatar(
-    imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageUrl: String
 ) {
     Image(
         painter = rememberAsyncImagePainter(model = imageUrl),
-        contentDescription = "User avatar",
+        contentDescription = stringResource(id = R.string.user_avatar),
         modifier = modifier
             .clip(RoundedCornerShape(8.dp)),
         contentScale = ContentScale.Crop

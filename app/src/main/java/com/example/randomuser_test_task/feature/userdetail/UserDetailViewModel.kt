@@ -2,7 +2,7 @@ package com.example.randomuser_test_task.feature.userdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomuser_test_task.domain.userdetail.UserDetailsInteractor
+import com.example.randomuser_test_task.data.repository.UsersRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserDetailViewModel(
-    private val interactor: UserDetailsInteractor,
+    private val usersRepository: UsersRepository,
     private val userId: String
 ) : ViewModel() {
 
@@ -27,58 +27,50 @@ class UserDetailViewModel(
 
     fun onEvent(event: UserDetailEvent) {
         when (event) {
-            UserDetailEvent.OnLoadUser -> loadUser()
+            UserDetailEvent.OnBackButtonClicked -> onBackButtonClicked()
+            is UserDetailEvent.OnTabSelected -> onTabSelected(event.tabIndex)
+            is UserDetailEvent.OnPhoneClicked -> makePhoneCall()
+            is UserDetailEvent.OnEmailClicked -> sendEmail()
+            is UserDetailEvent.OnLocationClicked -> openLocation()
         }
     }
 
-    fun onBackClick() {
+    private fun onBackButtonClicked() {
         viewModelScope.launch {
-            _sideEffect.emit(UserDetailSideEffect.NavigateBack)
+            _sideEffect.emit(UserDetailSideEffect.Finish)
         }
     }
 
-    fun makePhoneCall(phoneNumber: String) {
+    private fun makePhoneCall() {
         viewModelScope.launch {
+            val phoneNumber = state.value.user?.phone ?: return@launch
             _sideEffect.emit(UserDetailSideEffect.MakePhoneCall(phoneNumber))
         }
     }
 
-    fun sendEmail(email: String) {
+    private fun sendEmail() {
         viewModelScope.launch {
+            val email = state.value.user?.email ?: return@launch
             _sideEffect.emit(UserDetailSideEffect.SendEmail(email))
         }
     }
 
-    fun openLocation(latitude: Double, longitude: Double) {
+    private fun openLocation() {
         viewModelScope.launch {
+            val latitude = state.value.user?.latitude ?: return@launch
+            val longitude = state.value.user?.longitude ?: return@launch
             _sideEffect.emit(UserDetailSideEffect.OpenLocation(latitude, longitude))
         }
     }
 
-    fun onTabSelected(tabIndex: Int) {
+    private fun onTabSelected(tabIndex: Int) {
         _state.update { it.copy(selectedTabIndex = tabIndex) }
     }
 
     private fun loadUser() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-
-            try {
-                val user = interactor.getUserById(userId)
-                _state.update {
-                    it.copy(
-                        user = user,
-                        isLoading = false
-                    )
-                }
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isLoading = false
-                    )
-                }
-                _sideEffect.emit(UserDetailSideEffect.ShowError(e.message ?: "Failed to load user details"))
-            }
+            val user = usersRepository.getUserById(userId)
+            _state.update { it.copy(user = user) }
         }
     }
 }

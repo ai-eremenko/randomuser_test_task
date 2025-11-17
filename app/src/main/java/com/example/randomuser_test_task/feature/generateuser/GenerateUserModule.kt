@@ -5,5 +5,7 @@ import org.koin.dsl.module
 
 
 val generateUserModule = module {
-    viewModel { GenerateUserViewModel(get()) }
+    viewModel { (cameFromUserList: Boolean) ->
+        GenerateUserViewModel(usersRepository = get(), cameFromUserList = cameFromUserList)
+    }
 }

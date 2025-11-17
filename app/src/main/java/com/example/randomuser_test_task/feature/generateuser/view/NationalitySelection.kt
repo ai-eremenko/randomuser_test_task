@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,16 +29,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.Nationality
+import com.example.randomuser_test_task.R
+import com.example.randomuser_test_task.domain.Nationality
+import com.example.randomuser_test_task.feature.generateuser.GenerateUserEvent
+import com.example.randomuser_test_task.uikit.BlueDark
 
 @Composable
 fun NationalitySelection(
     selectedNationalities: Set<Nationality>,
-    onNationalitiesChanged: (Nationality) -> Unit
+    onEvent: (GenerateUserEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
@@ -58,15 +61,16 @@ fun NationalitySelection(
             ) {
                 Text(
                     text = if (selectedNationalities.isEmpty()) {
-                        "Select Nationalities"
+                        stringResource(id = R.string.select_nationalities)
                     } else {
-                        "Selected: ${selectedNationalities.size}"
+                        stringResource(id = R.string.selected_count,
+                            selectedNationalities.size)
                     },
                     color = if (selectedNationalities.isEmpty()) Color.Gray else Color.Black
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown",
+                    contentDescription = stringResource(id = R.string.dropdown),
                     tint = Color.Black
                 )
             }
@@ -93,7 +97,7 @@ fun NationalitySelection(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onNationalitiesChanged(nationality)
+                                onEvent(GenerateUserEvent.OnNationalitySelected(nationality))
                             }
                             .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -101,8 +105,13 @@ fun NationalitySelection(
                         Checkbox(
                             checked = selectedNationalities.contains(nationality),
                             onCheckedChange = {
-                                onNationalitiesChanged(nationality)
-                            }
+                                onEvent(GenerateUserEvent.OnNationalitySelected(nationality))
+                            },
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = BlueDark,
+                                checkmarkColor = Color.White,
+                                uncheckedColor = Color.Gray
+                            )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(

@@ -10,12 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.randomuser_test_task.domain.model.User
+import com.example.randomuser_test_task.domain.User
 
 @Composable
 fun UserInfo(
-    user: User,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    user: User
 ) {
     Column(modifier = modifier) {
         Text(
