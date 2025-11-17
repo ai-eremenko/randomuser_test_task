@@ -88,4 +88,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.paging.runtime.ktx)
     implementation(libs.paging.compose)
+    testImplementation(libs.junit)
+    testImplementation(libs.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
 }

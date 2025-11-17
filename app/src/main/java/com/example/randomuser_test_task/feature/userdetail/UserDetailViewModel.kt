@@ -44,6 +44,7 @@ class UserDetailViewModel(
     private fun makePhoneCall() {
         viewModelScope.launch {
             val phoneNumber = state.value.user?.phone ?: return@launch
+            if (phoneNumber.isBlank()) return@launch
             _sideEffect.emit(UserDetailSideEffect.MakePhoneCall(phoneNumber))
         }
     }
@@ -51,6 +52,7 @@ class UserDetailViewModel(
     private fun sendEmail() {
         viewModelScope.launch {
             val email = state.value.user?.email ?: return@launch
+            if (email.isBlank()) return@launch
             _sideEffect.emit(UserDetailSideEffect.SendEmail(email))
         }
     }
